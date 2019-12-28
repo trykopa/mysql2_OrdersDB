@@ -1,0 +1,109 @@
+CREATE TABLE app(app_id INT NOT NULL AUTO_INCREMENT, district VARCHAR(20) NOT NULL, adress VARCHAR(200) NOT NULL, area DECIMAL(4,2),rooms INT, price DECIMAL(9,2), PRIMARY KEY ( app_id ));
+
+
+INSERT INTO app (‘district’, ‘adress’, ‘area’, ‘rooms’, ‘price’) VALUES (‘Дарницкий’, ‘ул.Бобровская д№1 кв№33’, ’47’, ‘2’, ‘40500.00’);
+
+INSERT INTO test.app (‘district’, ‘adress’, ‘area’, ‘rooms’, ‘price’) VALUES(’Дарницкий’, ‘ул Бобровская д 1 кв 33’, ’47’, ‘2’, ‘4050000.00’);
+
+
+
+CREATE TABLE IF NOT EXISTS `mydb`.`clients` (
+  `idclients` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `phone` VARCHAR(10) NOT NULL,
+  `address` VARCHAR(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  PRIMARY KEY (`idclients`),
+  UNIQUE INDEX `phone_UNIQUE` (`phone` ASC) VISIBLE)
+
+
+CREATE TABLE IF NOT EXISTS `mydb`.`goods` (
+  `idgoods` INT NOT NULL AUTO_INCREMENT,
+  `article` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `description` VARCHAR(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
+  `price` DECIMAL(9,2) NOT NULL,
+  PRIMARY KEY (`idgoods`),
+  UNIQUE INDEX `article_UNIQUE` (`article` ASC) VISIBLE)
+
+
+CREATE TABLE IF NOT EXISTS `mydb`.`orders` (
+  `idorders` INT NOT NULL AUTO_INCREMENT,
+  `idclients` INT NOT NULL,
+  `created` DATE NOT NULL,
+  `total` DECIMAL(20,2) NOT NULL,
+  PRIMARY KEY (`idorders`),
+  INDEX `idclients_idx` (`idclients` ASC) VISIBLE,
+  CONSTRAINT `idclients`
+    FOREIGN KEY (`idclients`)
+    REFERENCES `mydb`.`clients` (`idclients`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+
+CREATE TABLE IF NOT EXISTS `mydb`.`order_item` (
+  `idorder_item` INT NOT NULL AUTO_INCREMENT,
+  `order_num` INT NOT NULL,
+  `goods` INT NOT NULL,
+  `goods_num` INT NOT NULL,
+  INDEX `goods_idx` (`goods` ASC) VISIBLE,
+  INDEX `order_num_idx` (`order_num` ASC) VISIBLE,
+  PRIMARY KEY (`idorder_item`),
+  CONSTRAINT `goods`
+    FOREIGN KEY (`goods`)
+    REFERENCES `mydb`.`goods` (`idgoods`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `order_num`
+    FOREIGN KEY (`order_num`)
+    REFERENCES `mydb`.`orders` (`idorders`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+
+INSERT INTO `mydb`.`clients` (`idclients`, `name`, `phone`, `address`) VALUES (NULL, NULL, NULL, NULL);
+
+CREATE TABLE IF NOT EXISTS `test`.`clients` (
+  `idclients` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(200) NOT NULL,
+  `phone` INT NOT NULL,
+  `address` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`idclients`),
+  UNIQUE INDEX `phone_UNIQUE` (`phone` ASC) VISIBLE);
+  
+  CREATE TABLE IF NOT EXISTS `test`.`goods` (
+  `idgoods` INT NOT NULL AUTO_INCREMENT,
+  `article` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(250) NOT NULL,
+  `price` DECIMAL(9,2) NOT NULL,
+  PRIMARY KEY (`idgoods`),
+  UNIQUE INDEX `article_UNIQUE` (`article` ASC) VISIBLE);
+  
+  CREATE TABLE IF NOT EXISTS `test`.`orders` (
+  `idorders` INT NOT NULL AUTO_INCREMENT,
+  `idclients` INT NOT NULL,
+  `created` DATE NOT NULL,
+  `total` DECIMAL(20,2) NOT NULL,
+  PRIMARY KEY (`idorders`),
+  INDEX `idclients_idx` (`idclients` ASC) VISIBLE,
+  CONSTRAINT `idclients`
+    FOREIGN KEY (`idclients`)
+    REFERENCES `test`.`clients` (`idclients`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+    CREATE TABLE IF NOT EXISTS `test`.`order_item` (
+  `idorder_item` INT NOT NULL AUTO_INCREMENT,
+  `order_num` INT NOT NULL,
+  `goods` INT NOT NULL,
+  `goods_num` INT NOT NULL,
+  INDEX `goods_idx` (`goods` ASC) VISIBLE,
+  INDEX `order_num_idx` (`order_num` ASC) VISIBLE,
+  PRIMARY KEY (`idorder_item`),
+  CONSTRAINT `goods`
+    FOREIGN KEY (`goods`)
+    REFERENCES `test`.`goods` (`idgoods`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `order_num`
+    FOREIGN KEY (`order_num`)
+    REFERENCES `test`.`orders` (`idorders`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
