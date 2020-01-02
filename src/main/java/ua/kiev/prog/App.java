@@ -29,6 +29,9 @@ public class App
                 case "b":
                     DBMenu.menuItemB(conn);
                     break;
+                case "c":
+                    DBMenu.menuItemC(conn);
+                    break;
                 case "d":
                     DBMenu.menuItemD(conn);
                     break;

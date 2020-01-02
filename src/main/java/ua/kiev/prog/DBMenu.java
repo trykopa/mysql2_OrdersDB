@@ -45,18 +45,17 @@ public class DBMenu {
     public static void menuItemC(Connection conn) throws SQLException{
         Scanner sc = new Scanner(System.in);
         boolean tmp = false;
+        int clientID = 0;
         do {
-            System.out.println("Введите ID клиента или часть Фамилии для поиска ID клиента в базе:");
-            String search = sc.nextLine();
-            int clientID = 0;
-            DBQueries.searchClient(conn, search);
             System.out.println("Введите выбранный ID клиента:");
             if (sc.hasNextInt()) {
                 clientID = sc.nextInt();
+                DBQueries.searchClient(conn, clientID);
                 tmp = true;
             }
-        } while (tmp);
+        } while (!tmp);
         List<OrderItem> list = createList(conn);
+        DBQueries.createOrder(conn, clientID, list);
 
 
     }
@@ -67,6 +66,10 @@ public class DBMenu {
 
     public static void menuItemE(Connection conn) throws SQLException {
         DBQueries.showGoods(conn);
+    }
+
+    public static void menuItemF(Connection conn) throws SQLException{
+        DBQueries.showOrders(conn);
     }
 
     public static List<OrderItem> createList(Connection conn) throws SQLException {
@@ -99,7 +102,7 @@ public class DBMenu {
                     }
             }
 
-        } while (ready);
+        } while (!ready);
 
         return itemsList;
     }

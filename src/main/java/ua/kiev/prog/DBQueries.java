@@ -49,11 +49,15 @@ public class DBQueries {
 
     }
 
-    public static void searchClient(Connection conn, String search) throws SQLException {
-        String sql = "SELECT * FROM clients WHERE idclients OR name LIKE ?";
+    public static void searchClient(Connection conn, int search) throws SQLException {
+        /*String sql = "SELECT * FROM clients WHERE idclients = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, "%" + search + "%");
+        ps.setInt(1, search);
         ResultSet rs = ps.executeQuery(sql);
+        printRes(rs);*/
+        String sql = "SELECT * FROM clients WHERE idclients = " + search;
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
         printRes(rs);
     }
 
@@ -72,7 +76,7 @@ public class DBQueries {
 
     public static int checkArticle(Connection conn, String check) throws SQLException {
             int id = 0;
-            String sql = "SELECT idgoods FROM goods WHERE article =" + check;
+            String sql = "SELECT idgoods FROM goods WHERE article =" + "'"+check+"'";
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()){
@@ -92,21 +96,43 @@ public class DBQueries {
         ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
         ps.setFloat(3, getTotalPrice(conn, list));
         ps.execute();
-        
+
+        int id = 0;
+        PreparedStatement st = conn.prepareStatement("SELECT MAX(idorders) AS id from orders");
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            id = rs.getInt("id");
+        }
+        sql = "INSERT INTO order_item (order_num, goods, goods_num) VALUES (?, ?, ?)";
+        PreparedStatement res = conn.prepareStatement(sql);
+        for (OrderItem item : list) {
+            res.setInt(1, id);
+            res.setInt(2, item.getGood());
+            res.setInt(3, item.getGood_number());
+            res.execute();
+
+        }
+
+        System.out.printf("Заказ %d на сумму %f оформлен!%n", id, getTotalPrice(conn, list));
     }
 
     public static float getTotalPrice(Connection conn, List<OrderItem> list) throws SQLException {
         float total = 0;
-        String sql = "SELECT price FROM goods WHERE article = ?";
+        String sql = "SELECT price FROM goods WHERE idgoods = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs;
         for (OrderItem item : list){
-            ps.setFloat(1, item.getGood());
-            rs = ps.executeQuery();
-            total = total + rs.getFloat(1);
+            ps.setInt(1, item.getGood());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                total = total + rs.getFloat(1);
+            }
 
         }
         return total;
     }
 
+    public static void showOrders(Connection conn) {
+        String sql = "";
+
+    }
 }
