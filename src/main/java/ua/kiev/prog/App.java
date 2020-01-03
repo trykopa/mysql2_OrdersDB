@@ -38,6 +38,9 @@ public class App
                 case "e":
                     DBMenu.menuItemE(conn);
                     break;
+                case "f":
+                    DBMenu.menuItemF(conn);
+                    break;
                 case "?":
                     DBMenu.showMenu();
                     break;
